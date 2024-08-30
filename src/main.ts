@@ -12,13 +12,16 @@ class Root {
         for (let roomName in Game.rooms){
             let room = Game.rooms[roomName]
 
+            
+
             if (!room.memory.role){
                 this.roomManager.initRoom(room, "Citadel")
             }
             let spawn = this.spawningManager.getSpawn(room)
             if(spawn){
-                this.spawningManager.spawnCreep(spawn, "BootstrapHarvester")
+                this.spawningManager.spawnCreep(spawn, "BootstrapWorker")
             }
+            this.roomManager.findDynamicTasks(room)
         }
         
         

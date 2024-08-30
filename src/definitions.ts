@@ -5,6 +5,7 @@ declare global {
     interface RoomMemory {
         role: RoomRoles
         taskList: taskData[]
+        spawnList: BodyTypeName[]
         Sources: interactableRoomOBJData[]
         Minerals: interactableRoomOBJData[] 
         Controller: interactableRoomOBJData[]

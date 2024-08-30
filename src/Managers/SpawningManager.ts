@@ -1,9 +1,9 @@
-export type BodyTypeName = "BootstrapHarvester" | "BootStrapHauler"
+export type BodyTypeName = "BootstrapWorker" | "BootStrapHauler"
 type BodyTypeLookup = {[bodyType in BodyTypeName]: BodyPartConstant[]}
 
 export class SpawningManager {
     private bodyTypeList: BodyTypeLookup = {
-        "BootstrapHarvester": [WORK, WORK, MOVE, CARRY],
+        "BootstrapWorker": [WORK, WORK, MOVE, CARRY],
         "BootStrapHauler": [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
     };
 

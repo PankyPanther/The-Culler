@@ -10,6 +10,7 @@ export class RoomManager {
         Memory.rooms[room.name] = {
             role: role,
             taskList: [],
+            spawnList: [],
             Sources: [],
             Minerals: [],
             Controller: [],
@@ -78,18 +79,37 @@ export class RoomManager {
         }
 
         this.findStaticTasks(room)
+        this.findDynamicTasks(room)
     }
 
     findStaticTasks(room: Room){
         for (const source of room.memory.Sources) {
             for (const openPos of source.openPositions){
-                room.memory.taskList.push({taskName: "Harvest", bodyTypeName: "BootstrapHarvester", pos: {x: openPos.x, y: openPos.y}, target: source.Id})
+                room.memory.taskList.push({taskName: "Harvest", bodyTypeName: "BootstrapWorker", pos: {x: openPos.x, y: openPos.y}, target: source.Id})
             }
         }
 
         for (const controller of room.memory.Controller) {
             for (const openPos of controller.openPositions){
-                room.memory.taskList.push({taskName: "Upgrade", bodyTypeName: "BootstrapHarvester", pos: {x: openPos.x, y: openPos.y}, target: controller.Id})
+                room.memory.taskList.push({taskName: "Upgrade", bodyTypeName: "BootstrapWorker", pos: {x: openPos.x, y: openPos.y}, target: controller.Id})
+            }
+        }
+    }
+
+    findDynamicTasks(room: Room){
+        const structures = room.find(FIND_STRUCTURES, {
+            filter: (structure): structure is StructureSpawn | StructureExtension => {
+                return structure.structureType === STRUCTURE_SPAWN || structure.structureType === STRUCTURE_EXTENSION;
+            }
+        })
+
+        console.log(structures.length)
+
+        for (const structure of structures){
+            const tData = {taskName: "Store", bodyTypeName: "BootstrapHarvester", pos: {x: structure.pos.x, y: structure.pos.y}, target: structure.id}
+            if (structure.store.getFreeCapacity() !== 0 && !room.memory.taskList.includes({taskName: "Store", bodyTypeName: "BootstrapWorker", pos: {x: structure.pos.x, y: structure.pos.y}, target: structure.id})){
+                const openPos = getOpenSpaces({x: structure.pos.x, y: structure.pos.y}, room, 1).sort(() => Math.random() - 0.5)[0];
+                room.memory.taskList.push({taskName: "Store", bodyTypeName: "BootstrapWorker", pos: {x: openPos.x, y: openPos.y}, target: structure.id})
             }
         }
     }

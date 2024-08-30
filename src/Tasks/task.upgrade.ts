@@ -24,7 +24,7 @@ export const Upgrade: Task = { //input actually helpful dictunaries
                 } else {
                     creep.upgradeController(controller)
                 }
-                if (creep.store[RESOURCE_ENERGY] === 0){
+                if (creep.store[RESOURCE_ENERGY] === 0 || creep.ticksToLive! < 10){
                     Game.rooms[creep.memory.homeRoom].memory.taskList.push(creep.memory.taskData)
                     creep.memory.taskData = undefined
                     return "ChangeState"
