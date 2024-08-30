@@ -1,11 +1,21 @@
-export type BodyTypeName = "BootstrapWorker" | "BootStrapHauler"
+import { TaskNames } from "./TaskManager";
+
+export type BodyTypeName = "BootstrapWorker" | "BootStrapHauler" | "BootstrapUpgrader"
 type BodyTypeLookup = {[bodyType in BodyTypeName]: BodyPartConstant[]}
+type defaultBodyTypeTask = {[bodyType in BodyTypeName]: TaskNames[]}
 
 export class SpawningManager {
     private bodyTypeList: BodyTypeLookup = {
         "BootstrapWorker": [WORK, WORK, MOVE, CARRY],
-        "BootStrapHauler": [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
+        "BootStrapHauler": [WORK, WORK, MOVE, CARRY],
+        "BootstrapUpgrader": [WORK, WORK, MOVE, CARRY],
     };
+
+    private defaultBodyTask: defaultBodyTypeTask = {
+        "BootstrapWorker": ["Harvest"],
+        "BootStrapHauler": ["Harvest", "Store"],
+        "BootstrapUpgrader": ["Harvest", "Upgrade"]
+    }
 
     private creepNames: string[] = [
         "The Reaper",
@@ -30,10 +40,32 @@ export class SpawningManager {
         "The Enforcer"
     ];
 
-    spawnCreep(spawn: StructureSpawn, creepBodyType: BodyTypeName): void {
-        spawn.spawnCreep(this.bodyTypeList[creepBodyType], (this.getRandomName(this.creepNames) + " " + Game.time), {
-            memory: {bodyType: creepBodyType, tasks: ["Harvest","Upgrade"], homeRoom: Game.spawns[spawn.name].room.name, workRoom: Game.spawns[spawn.name].room.name, taskData: undefined}
-        })
+
+    runMain(room: Room){
+        
+        const roomSpawnList = room.memory.spawnList
+        if (!roomSpawnList.length) { return }
+
+        const spawns = this.getSpawns(room)
+        if (!spawns) { return }
+
+        for (const spawn of spawns){
+            if (!spawn.spawning && this.spawnCreep(spawn, roomSpawnList[0])){
+                roomSpawnList.splice(0, 1)
+                break
+            }
+        }
+    }
+
+
+    spawnCreep(spawn: StructureSpawn, creepBodyType: BodyTypeName): boolean {
+        if (spawn.spawnCreep(this.bodyTypeList[creepBodyType], (this.getRandomName(this.creepNames) + " " + Game.time), {
+            memory: {bodyType: creepBodyType, tasks: this.defaultBodyTask[creepBodyType], homeRoom: Game.spawns[spawn.name].room.name, workRoom: Game.spawns[spawn.name].room.name, taskData: undefined}
+        }) === 0){
+            return true
+        }
+
+        return false
     }
 
     getRandomName(array: string[]): string {
@@ -41,10 +73,14 @@ export class SpawningManager {
         return array[randomIndex];
     }
 
-    getSpawn(room: Room): StructureSpawn | null {
+    getSpawns(room: Room): StructureSpawn[] | null {
+        let spawns: StructureSpawn[] = []
         for (let spawn of room.memory.Spawns){
-            return Game.getObjectById(spawn.Id)
+            spawns.push(Game.getObjectById(spawn.Id) as StructureSpawn)
         }
+
+        if (spawns.length) { return spawns}
+
         return null
     }
 }

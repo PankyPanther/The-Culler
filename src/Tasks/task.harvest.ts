@@ -1,7 +1,7 @@
 import { taskData } from "definitions"
 import { Task } from "Managers/TaskManager"
 
-export const Harvest: Task = { 
+export const HarvestBootstrap: Task = { 
     taskName: "Harvest",
     taskEmoji: "⛏",
 

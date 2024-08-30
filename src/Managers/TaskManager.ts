@@ -1,9 +1,11 @@
 import { taskData } from "definitions"
-import { Harvest } from "Tasks/task.harvest"
+import { Build } from "Tasks/task.build"
+import { HarvestBootstrap } from "Tasks/task.harvest"
 import { Store } from "Tasks/task.store"
 import { Upgrade } from "Tasks/task.upgrade"
 
-export type TaskNames = "Harvest" | "Upgrade" | "Store"
+export type TaskNames = "Harvest"| "HarvestBootstrap" | "Upgrade" | "Store" | "Build"
+
 export type Task = {
     taskName: TaskNames
     taskEmoji: string
@@ -16,9 +18,11 @@ type TaskLookup = {[taskName in TaskNames]: Task}
 
 export class TaskManager {
     private taskList: TaskLookup = {
-        "Harvest": Harvest,
+        "Harvest": HarvestBootstrap,
+        "HarvestBootstrap": HarvestBootstrap,
         "Upgrade": Upgrade,
-        "Store": Store
+        "Store": Store,
+        "Build": Build
     };
 
 
