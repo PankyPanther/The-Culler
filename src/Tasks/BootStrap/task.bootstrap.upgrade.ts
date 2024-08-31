@@ -1,8 +1,8 @@
 import { taskData } from "definitions"
 import { Task } from "Managers/TaskManager"
 
-export const Upgrade: Task = { //input actually helpful dictunaries
-    taskName: "Upgrade",
+export const BootStrapUpgrade: Task = { //input actually helpful dictunaries
+    taskName: "BootStrapUpgrade",
     taskEmoji: "🔼",
 
     run(creep){
@@ -39,7 +39,7 @@ export const Upgrade: Task = { //input actually helpful dictunaries
 
     getTaskData(creep: Creep): taskData | undefined {
         for (const task of Game.rooms[creep.memory.homeRoom].memory.taskList){
-            if(task.taskName === "Upgrade"){
+            if(task.taskName === "BootStrapUpgrade"){
                 return task
             }
         }

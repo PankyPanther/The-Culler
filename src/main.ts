@@ -15,7 +15,7 @@ class Root {
             }
 
             if (!room.memory.spawnList.length) {
-                let spawnlist: BodyTypeName[] = ["BootstrapWorker", "BootstrapWorker", "BootStrapHauler", "BootstrapUpgrader"] 
+                let spawnlist: BodyTypeName[] = ["BootStrapHauler", "BootStrapHauler", "BootstrapWorker", "BootstrapWorker", "BootStrapHauler", "BootstrapUpgrader"] 
                 for (let name of spawnlist){
                     room.memory.spawnList.push(name)
                 }
@@ -28,8 +28,13 @@ class Root {
         for (const creepName in Memory.creeps) {
             if(!Game.creeps[creepName]) {
               console.log(`Deleting memory for dead creep: ${creepName}`)
+              const taskData = Memory.creeps[creepName].taskData
+              if (taskData){
+                    Game.rooms[Memory.creeps[creepName].homeRoom].memory.runningTask.splice(Game.rooms[Memory.creeps[creepName].homeRoom].memory.runningTask.indexOf(taskData, 1))
+              }
               delete Memory.creeps[creepName];
             } else {
+                // Game.creeps[creepName].suicide()
                 this.taskManager.runTask(Game.creeps[creepName])
             }
         }

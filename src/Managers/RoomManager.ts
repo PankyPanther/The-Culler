@@ -116,7 +116,7 @@ export class RoomManager {
         if (room.memory.directiveLevel === 1){
             for (const source of room.memory.Sources){
                 for (const openPos of source.openPositions){
-                    const data: taskData = {taskName: "Harvest", bodyTypeName: ["BootstrapWorker", "BootstrapUpgrader", "BootStrapHauler"], pos: {x: openPos.x, y: openPos.y}, target: source.Id}
+                    const data: taskData = {taskName: "BootStrapHarvest", bodyTypeName: ["BootstrapWorker", "BootstrapUpgrader", "BootStrapHauler"], pos: {x: openPos.x, y: openPos.y}, target: source.Id}
                     if (!room.memory.taskList.some(task => this.objectsAreEqual(task, data)) && !room.memory.runningTask.some(task => this.objectsAreEqual(task, data))){
                         room.memory.taskList.push(data)
                     }
@@ -133,7 +133,7 @@ export class RoomManager {
             for (const structure of importantStructures){
                 if (structure.store.getFreeCapacity() !== 0){
                     const openPos = getOpenSpaces({x: structure.pos.x, y: structure.pos.y}, room, 1)[0]
-                    const data: taskData = {taskName: "Store", bodyTypeName: ["BootStrapHauler"], pos: {x: openPos.x, y: openPos.y}, target: structure.id}
+                    const data: taskData = {taskName: "BootStrapStore", bodyTypeName: ["BootStrapHauler"], pos: {x: openPos.x, y: openPos.y}, target: structure.id}
                     if (!room.memory.taskList.some(task => this.objectsAreEqual(task, data)) && !room.memory.runningTask.some(task => this.objectsAreEqual(task, data))){
                         room.memory.taskList.push(data)
                     }
@@ -142,7 +142,7 @@ export class RoomManager {
 
             for (const controller of room.memory.Controller){
                 for (const openPos of controller.openPositions){
-                    const data: taskData = {taskName: "Upgrade", bodyTypeName: ["BootstrapUpgrader"], pos: {x: openPos.x, y: openPos.y}, target: controller.Id}
+                    const data: taskData = {taskName: "BootStrapUpgrade", bodyTypeName: ["BootstrapUpgrader"], pos: {x: openPos.x, y: openPos.y}, target: controller.Id}
                     if (!room.memory.taskList.some(task => this.objectsAreEqual(task, data)) && !room.memory.runningTask.some(task => this.objectsAreEqual(task, data))){
                         room.memory.taskList.push(data)
                     }
@@ -153,7 +153,7 @@ export class RoomManager {
 
             for (const site of constructionSites){
                 const openPos = getOpenSpaces({x: site.pos.x, y: site.pos.y}, room, 1)[0]
-                const data: taskData = {taskName: "Build", bodyTypeName: ["BootstrapWorker"], pos: {x: openPos.x, y: openPos.y}, target: site.id}
+                const data: taskData = {taskName: "BootStrapBuild", bodyTypeName: ["BootstrapWorker"], pos: {x: openPos.x, y: openPos.y}, target: site.id}
                 if (!room.memory.taskList.some(task => this.objectsAreEqual(task, data)) && !room.memory.runningTask.some(task => this.objectsAreEqual(task, data))){
                     room.memory.taskList.push(data)
                 }

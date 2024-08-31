@@ -1,11 +1,11 @@
 import { taskData } from "definitions"
-import { Build } from "Tasks/task.build"
-import { HarvestBootstrap } from "Tasks/task.harvest"
-import { Store } from "Tasks/task.store"
-import { Upgrade } from "Tasks/task.upgrade"
 import { defaultBodyTask } from "./SpawningManager"
+import { BootStrapHarvest } from "Tasks/BootStrap/task.bootstrap.harvest"
+import { BootStrapUpgrade } from "Tasks/BootStrap/task.bootstrap.upgrade"
+import { BootStrapStore } from "Tasks/BootStrap/task.bootstrap.store"
+import { BootStrapBuild } from "Tasks/BootStrap/task.bootstrap.build"
 
-export type TaskNames = "Harvest"| "HarvestBootstrap" | "Upgrade" | "Store" | "Build"
+export type TaskNames = "BootStrapHarvest" | "BootStrapUpgrade" | "BootStrapStore" | "BootStrapBuild"
 
 export type Task = {
     taskName: TaskNames
@@ -19,11 +19,10 @@ type TaskLookup = {[taskName in TaskNames]: Task}
 
 export class TaskManager {
     private taskList: TaskLookup = {
-        "Harvest": HarvestBootstrap,
-        "HarvestBootstrap": HarvestBootstrap,
-        "Upgrade": Upgrade,
-        "Store": Store,
-        "Build": Build
+        "BootStrapHarvest": BootStrapHarvest,
+        "BootStrapUpgrade": BootStrapUpgrade,
+        "BootStrapStore": BootStrapStore,
+        "BootStrapBuild": BootStrapBuild
     };
 
 

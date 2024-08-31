@@ -1,9 +1,9 @@
 import { taskData } from "definitions"
 import { Task } from "Managers/TaskManager"
 
-export const Build: Task = { 
-    taskName: "Build",
-    taskEmoji: "🔨",
+export const BootStrapHarvest: Task = { 
+    taskName: "BootStrapHarvest",
+    taskEmoji: "⛏",
 
     run(creep) {
         if (creep.memory.taskData === undefined){
@@ -11,22 +11,23 @@ export const Build: Task = {
 
             if (taskD){
                 Game.rooms[creep.memory.homeRoom].memory.taskList.splice(Game.rooms[creep.memory.homeRoom].memory.taskList.indexOf(taskD), 1)
+                Game.rooms[creep.memory.homeRoom].memory.runningTask.push(taskD)
                 creep.memory.taskData = taskD
             } else {
-                console.log("There are no Build Tasks Available")
+                console.log("There are no Harvest Tasks Available")
             }
         } else {
-            const ConstructionSite = Game.getObjectById(creep.memory.taskData.target) as ConstructionSite
-            if (ConstructionSite){
+            const source = Game.getObjectById(creep.memory.taskData.target) as Source
+            if (source){
                 const targetPos = new RoomPosition(creep.memory.taskData.pos.x, creep.memory.taskData.pos.y, creep.memory.homeRoom)
                 if(creep.pos.x !== targetPos.x || creep.pos.y !== targetPos.y || creep.room.name !== targetPos.roomName ){
-                    creep.build(ConstructionSite)
                     creep.moveTo(targetPos)
                 } else {
-                    creep.build(ConstructionSite)
+                    creep.harvest(source)
                 }
         
-                if (creep.store[RESOURCE_ENERGY] === 0 || creep.ticksToLive! < 1 || !ConstructionSite) {
+                if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 || creep.ticksToLive! < 1) {
+                    Game.rooms[creep.memory.homeRoom].memory.runningTask.splice(Game.rooms[creep.memory.homeRoom].memory.runningTask.indexOf(creep.memory.taskData), 1)
                     creep.memory.taskData = undefined
                     return "ChangeState"
                 }
@@ -39,7 +40,7 @@ export const Build: Task = {
 
     getTaskData(creep: Creep): taskData | undefined {
         for (const task of Game.rooms[creep.memory.homeRoom].memory.taskList){
-            if(task.taskName === "Build"){
+            if(task.taskName === "BootStrapHarvest"){
                 return task
             }
         }

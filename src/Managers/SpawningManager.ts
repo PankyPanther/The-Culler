@@ -5,9 +5,9 @@ type BodyTypeLookup = {[bodyType in BodyTypeName]: BodyPartConstant[]}
 
 type defaultBodyTypeTask = {[bodyType in BodyTypeName]: TaskNames[]}
 export const defaultBodyTask: defaultBodyTypeTask = {
-    "BootstrapWorker": ["Harvest", "Build"],
-    "BootStrapHauler": ["Harvest", "Store"],
-    "BootstrapUpgrader": ["Harvest", "Upgrade"]
+    "BootstrapWorker": ["BootStrapHarvest", "BootStrapBuild"],
+    "BootStrapHauler": ["BootStrapHarvest", "BootStrapStore"],
+    "BootstrapUpgrader": ["BootStrapHarvest", "BootStrapUpgrade"]
 }
 
 export class SpawningManager {
