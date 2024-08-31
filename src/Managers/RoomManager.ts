@@ -1,4 +1,4 @@
-import { roomOBJData, RoomRoles, interactableRoomOBJData } from "definitions"
+import { roomOBJData, RoomRoles, interactableRoomOBJData, taskData } from "definitions"
 import { getOpenSpaces } from "Utility/getOpenSpaces"
 import { BodyTypeName } from "./SpawningManager"
 
@@ -10,7 +10,9 @@ export class RoomManager {
 
         Memory.rooms[room.name] = {
             role: role,
+            directiveLevel: 1,
             taskList: [],
+            runningTask: [],
             spawnList: [],
             Sources: [],
             Minerals: [],
@@ -83,6 +85,78 @@ export class RoomManager {
                     roomName: spawn.room.name
                 }
                 room.memory.Spawns.push(spawnData) 
+            }
+        }
+    }
+
+    private objectsAreEqual(obj1: any, obj2: any): boolean {
+        if (Array.isArray(obj1) && Array.isArray(obj2)) {
+            // Compare arrays
+            if (obj1.length !== obj2.length) return false;
+            for (let i = 0; i < obj1.length; i++) {
+                if (!this.objectsAreEqual(obj1[i], obj2[i])) return false;
+            }
+            return true;
+        } else if (typeof obj1 === 'object' && typeof obj2 === 'object' && obj1 !== null && obj2 !== null) {
+            // Compare objects
+            const keys1 = Object.keys(obj1);
+            const keys2 = Object.keys(obj2);
+            if (keys1.length !== keys2.length) return false;
+            for (const key of keys1) {
+                if (!this.objectsAreEqual(obj1[key], obj2[key])) return false;
+            }
+            return true;
+        } else {
+            // Compare primitive values (numbers, strings, etc.)
+            return obj1 === obj2;
+        }
+    }
+
+    findRoomTasks(room: Room){
+        if (room.memory.directiveLevel === 1){
+            for (const source of room.memory.Sources){
+                for (const openPos of source.openPositions){
+                    const data: taskData = {taskName: "Harvest", bodyTypeName: ["BootstrapWorker", "BootstrapUpgrader", "BootStrapHauler"], pos: {x: openPos.x, y: openPos.y}, target: source.Id}
+                    if (!room.memory.taskList.some(task => this.objectsAreEqual(task, data)) && !room.memory.runningTask.some(task => this.objectsAreEqual(task, data))){
+                        room.memory.taskList.push(data)
+                    }
+                }
+            }
+
+            const importantStructures = room.find(FIND_MY_STRUCTURES, {
+                filter: (structure) => 
+                    structure.structureType === STRUCTURE_EXTENSION || 
+                    structure.structureType === STRUCTURE_SPAWN
+            }) as (StructureExtension | StructureSpawn)[];
+
+            
+            for (const structure of importantStructures){
+                if (structure.store.getFreeCapacity() !== 0){
+                    const openPos = getOpenSpaces({x: structure.pos.x, y: structure.pos.y}, room, 1)[0]
+                    const data: taskData = {taskName: "Store", bodyTypeName: ["BootStrapHauler"], pos: {x: openPos.x, y: openPos.y}, target: structure.id}
+                    if (!room.memory.taskList.some(task => this.objectsAreEqual(task, data)) && !room.memory.runningTask.some(task => this.objectsAreEqual(task, data))){
+                        room.memory.taskList.push(data)
+                    }
+                }
+            }
+
+            for (const controller of room.memory.Controller){
+                for (const openPos of controller.openPositions){
+                    const data: taskData = {taskName: "Upgrade", bodyTypeName: ["BootstrapUpgrader"], pos: {x: openPos.x, y: openPos.y}, target: controller.Id}
+                    if (!room.memory.taskList.some(task => this.objectsAreEqual(task, data)) && !room.memory.runningTask.some(task => this.objectsAreEqual(task, data))){
+                        room.memory.taskList.push(data)
+                    }
+                }
+            }
+
+            const constructionSites = room.find(FIND_MY_CONSTRUCTION_SITES)
+
+            for (const site of constructionSites){
+                const openPos = getOpenSpaces({x: site.pos.x, y: site.pos.y}, room, 1)[0]
+                const data: taskData = {taskName: "Build", bodyTypeName: ["BootstrapWorker"], pos: {x: openPos.x, y: openPos.y}, target: site.id}
+                if (!room.memory.taskList.some(task => this.objectsAreEqual(task, data)) && !room.memory.runningTask.some(task => this.objectsAreEqual(task, data))){
+                    room.memory.taskList.push(data)
+                }
             }
         }
     }

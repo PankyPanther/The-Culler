@@ -2,7 +2,13 @@ import { TaskNames } from "./TaskManager";
 
 export type BodyTypeName = "BootstrapWorker" | "BootStrapHauler" | "BootstrapUpgrader"
 type BodyTypeLookup = {[bodyType in BodyTypeName]: BodyPartConstant[]}
+
 type defaultBodyTypeTask = {[bodyType in BodyTypeName]: TaskNames[]}
+export const defaultBodyTask: defaultBodyTypeTask = {
+    "BootstrapWorker": ["Harvest"],
+    "BootStrapHauler": ["Harvest", "Store"],
+    "BootstrapUpgrader": ["Harvest", "Upgrade"]
+}
 
 export class SpawningManager {
     private bodyTypeList: BodyTypeLookup = {
@@ -11,11 +17,7 @@ export class SpawningManager {
         "BootstrapUpgrader": [WORK, WORK, MOVE, CARRY],
     };
 
-    private defaultBodyTask: defaultBodyTypeTask = {
-        "BootstrapWorker": ["Harvest"],
-        "BootStrapHauler": ["Harvest", "Store"],
-        "BootstrapUpgrader": ["Harvest", "Upgrade"]
-    }
+
 
     private creepNames: string[] = [
         "The Reaper",
@@ -60,7 +62,7 @@ export class SpawningManager {
 
     spawnCreep(spawn: StructureSpawn, creepBodyType: BodyTypeName): boolean {
         if (spawn.spawnCreep(this.bodyTypeList[creepBodyType], (this.getRandomName(this.creepNames) + " " + Game.time), {
-            memory: {bodyType: creepBodyType, tasks: this.defaultBodyTask[creepBodyType], homeRoom: Game.spawns[spawn.name].room.name, workRoom: Game.spawns[spawn.name].room.name, taskData: undefined}
+            memory: {bodyType: creepBodyType, tasks: defaultBodyTask[creepBodyType], homeRoom: Game.spawns[spawn.name].room.name, workRoom: Game.spawns[spawn.name].room.name, taskData: undefined}
         }) === 0){
             return true
         }

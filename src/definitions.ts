@@ -4,7 +4,9 @@ import { TaskNames } from "Managers/TaskManager"
 declare global {
     interface RoomMemory {
         role: RoomRoles
+        directiveLevel: number,
         taskList: taskData[]
+        runningTask: taskData[]
         spawnList: BodyTypeName[]
         Sources: interactableRoomOBJData[]
         Minerals: interactableRoomOBJData[] 
@@ -40,7 +42,7 @@ export interface interactableRoomOBJData extends roomOBJData {
 
 export interface taskData {
     taskName: TaskNames
-    bodyTypeName: BodyTypeName
+    bodyTypeName: BodyTypeName[]
     pos: Coord
     target: string // ID
 }

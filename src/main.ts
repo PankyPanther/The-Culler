@@ -17,6 +17,7 @@ class Root {
 
 
             this.spawningManager.runMain(room)
+            this.roomManager.findRoomTasks(room)
         }
         
         

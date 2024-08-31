@@ -11,6 +11,7 @@ export const HarvestBootstrap: Task = {
 
             if (taskD){
                 Game.rooms[creep.memory.homeRoom].memory.taskList.splice(Game.rooms[creep.memory.homeRoom].memory.taskList.indexOf(taskD), 1)
+                Game.rooms[creep.memory.homeRoom].memory.runningTask.push(taskD)
                 creep.memory.taskData = taskD
             } else {
                 console.log("There are no Harvest Tasks Available")
@@ -27,6 +28,7 @@ export const HarvestBootstrap: Task = {
         
                 if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 || creep.ticksToLive! < 10) {
                     Game.rooms[creep.memory.homeRoom].memory.taskList.push(creep.memory.taskData)
+                    Game.rooms[creep.memory.homeRoom].memory.runningTask.splice(Game.rooms[creep.memory.homeRoom].memory.runningTask.indexOf(creep.memory.taskData), 1)
                     creep.memory.taskData = undefined
                     return "ChangeState"
                 }

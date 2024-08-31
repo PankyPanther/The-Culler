@@ -3,6 +3,7 @@ import { Build } from "Tasks/task.build"
 import { HarvestBootstrap } from "Tasks/task.harvest"
 import { Store } from "Tasks/task.store"
 import { Upgrade } from "Tasks/task.upgrade"
+import { defaultBodyTask } from "./SpawningManager"
 
 export type TaskNames = "Harvest"| "HarvestBootstrap" | "Upgrade" | "Store" | "Build"
 
@@ -49,7 +50,7 @@ export class TaskManager {
 
 
     addTask(creep: Creep){
-        let tasks: TaskNames[] = ["Harvest", "Store"]
+        let tasks: TaskNames[] = defaultBodyTask[creep.memory.bodyType]
         for(let task of tasks){
             creep.memory.tasks.push(task)
         }
