@@ -21,12 +21,12 @@ export const Upgrade: Task = { //input actually helpful dictunaries
             if (controller){
                 const targetPos = new RoomPosition(creep.memory.taskData.pos.x, creep.memory.taskData.pos.y, creep.memory.homeRoom)
                 if(creep.pos.x !== targetPos.x || creep.pos.y !== targetPos.y || creep.room.name !== targetPos.roomName ){
+                    creep.upgradeController(controller)
                     creep.moveTo(targetPos)
                 } else {
                     creep.upgradeController(controller)
                 }
-                if (creep.store[RESOURCE_ENERGY] === 0 || creep.ticksToLive! < 10){
-                    Game.rooms[creep.memory.homeRoom].memory.taskList.push(creep.memory.taskData)
+                if (creep.store[RESOURCE_ENERGY] === 0 || creep.ticksToLive! < 1){
                     Game.rooms[creep.memory.homeRoom].memory.runningTask.splice(Game.rooms[creep.memory.homeRoom].memory.runningTask.indexOf(creep.memory.taskData), 1)
                     creep.memory.taskData = undefined
                     return "ChangeState"

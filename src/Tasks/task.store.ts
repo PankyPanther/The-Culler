@@ -11,7 +11,6 @@ export const Store: Task = { //input actually helpful dictunaries
 
             if (taskD){
                 Game.rooms[creep.memory.homeRoom].memory.taskList.splice(Game.rooms[creep.memory.homeRoom].memory.taskList.indexOf(taskD), 1)
-                Game.rooms[creep.memory.homeRoom].memory.runningTask.push(taskD)
                 creep.memory.taskData = taskD
             } else {
                 console.log("There are no Store Tasks Available")
@@ -22,8 +21,7 @@ export const Store: Task = { //input actually helpful dictunaries
                 if (creep.transfer(storeTarget, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE){
                     creep.moveTo(storeTarget)
                 }
-                if (creep.store[RESOURCE_ENERGY] === 0 || creep.ticksToLive! < 10){
-                    Game.rooms[creep.memory.homeRoom].memory.runningTask.splice(Game.rooms[creep.memory.homeRoom].memory.runningTask.indexOf(creep.memory.taskData), 1)
+                if (creep.store[RESOURCE_ENERGY] === 0 || creep.ticksToLive! < 1 || storeTarget.store.getFreeCapacity() === 0){
                     creep.memory.taskData = undefined
                     return "ChangeState"
                 } 

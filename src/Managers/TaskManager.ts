@@ -35,7 +35,9 @@ export class TaskManager {
 
             if (creep.memory.tasks.length){
                 this.runTask(creep)
-            } else {
+            } 
+
+            if (creep.memory.tasks.length <= 1){
                 this.addTask(creep)
             }
         }

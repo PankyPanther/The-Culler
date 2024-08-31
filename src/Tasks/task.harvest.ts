@@ -26,8 +26,7 @@ export const HarvestBootstrap: Task = {
                     creep.harvest(source)
                 }
         
-                if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 || creep.ticksToLive! < 10) {
-                    Game.rooms[creep.memory.homeRoom].memory.taskList.push(creep.memory.taskData)
+                if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 || creep.ticksToLive! < 1) {
                     Game.rooms[creep.memory.homeRoom].memory.runningTask.splice(Game.rooms[creep.memory.homeRoom].memory.runningTask.indexOf(creep.memory.taskData), 1)
                     creep.memory.taskData = undefined
                     return "ChangeState"

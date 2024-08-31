@@ -11,7 +11,6 @@ export const Build: Task = {
 
             if (taskD){
                 Game.rooms[creep.memory.homeRoom].memory.taskList.splice(Game.rooms[creep.memory.homeRoom].memory.taskList.indexOf(taskD), 1)
-                Game.rooms[creep.memory.homeRoom].memory.runningTask.push(taskD)
                 creep.memory.taskData = taskD
             } else {
                 console.log("There are no Build Tasks Available")
@@ -21,13 +20,13 @@ export const Build: Task = {
             if (ConstructionSite){
                 const targetPos = new RoomPosition(creep.memory.taskData.pos.x, creep.memory.taskData.pos.y, creep.memory.homeRoom)
                 if(creep.pos.x !== targetPos.x || creep.pos.y !== targetPos.y || creep.room.name !== targetPos.roomName ){
+                    creep.build(ConstructionSite)
                     creep.moveTo(targetPos)
                 } else {
                     creep.build(ConstructionSite)
                 }
         
-                if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-                    Game.rooms[creep.memory.homeRoom].memory.runningTask.splice(Game.rooms[creep.memory.homeRoom].memory.runningTask.indexOf(creep.memory.taskData), 1)
+                if (creep.store[RESOURCE_ENERGY] === 0 || creep.ticksToLive! < 1 || !ConstructionSite) {
                     creep.memory.taskData = undefined
                     return "ChangeState"
                 }

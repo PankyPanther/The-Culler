@@ -5,7 +5,7 @@ type BodyTypeLookup = {[bodyType in BodyTypeName]: BodyPartConstant[]}
 
 type defaultBodyTypeTask = {[bodyType in BodyTypeName]: TaskNames[]}
 export const defaultBodyTask: defaultBodyTypeTask = {
-    "BootstrapWorker": ["Harvest"],
+    "BootstrapWorker": ["Harvest", "Build"],
     "BootStrapHauler": ["Harvest", "Store"],
     "BootstrapUpgrader": ["Harvest", "Upgrade"]
 }

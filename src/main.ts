@@ -1,6 +1,6 @@
 import { RoomManager } from "Managers/RoomManager"
 import { TaskManager } from "Managers/TaskManager";
-import { SpawningManager } from "Managers/SpawningManager";
+import { BodyTypeName, SpawningManager } from "Managers/SpawningManager";
 
 class Root {
     private taskManager = new TaskManager()
@@ -8,14 +8,18 @@ class Root {
     private spawningManager = new SpawningManager()
 
     runTick() {
-
         for (let roomName in Game.rooms){
             let room = Game.rooms[roomName]
             if (!room.memory.role){
                 this.roomManager.initRoom(room, "Citadel")
             }
 
-
+            if (!room.memory.spawnList.length) {
+                let spawnlist: BodyTypeName[] = ["BootstrapWorker", "BootstrapWorker", "BootStrapHauler", "BootstrapUpgrader"] 
+                for (let name of spawnlist){
+                    room.memory.spawnList.push(name)
+                }
+            }
             this.spawningManager.runMain(room)
             this.roomManager.findRoomTasks(room)
         }
